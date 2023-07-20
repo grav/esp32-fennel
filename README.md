@@ -27,6 +27,8 @@ The `wrap_do` part is because of how local scope works with interactive mode, se
 
 ## Getting Clojure in the mix
 
+Might want to code up a "repl" with Clojure.
+
 Listening for output from Clojure
 
 ```
