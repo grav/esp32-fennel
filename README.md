@@ -10,7 +10,7 @@ Aim: Compile fennel code to Lua, send to ESP32 (with NodeMCU) to evaluate, and r
 # set baud rate
 $ stty -F /dev/ttyUSB0 115200
 # disable flow control
-$ stty -F /dev/ttymxc2 -crtscts
+$ stty -F /dev/ttyUSB0 -crtscts
 # start listening to output
 $ cat /dev/ttyUSB0
 # send some lua code
