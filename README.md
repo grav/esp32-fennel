@@ -2,6 +2,8 @@
 
 WIP
 
+Aim: Compile fennel code to Lua, send to ESP32 (with NodeMCU) to evaluate, and receive back result.
+
 ```
 # set baud rate
 $ stty -F /dev/ttyUSB0 115200
