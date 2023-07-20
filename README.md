@@ -23,6 +23,8 @@ $ echo -e "do local x=4\nprint(x+2)\nend\n" > /dev/ttyUSB0
 $ fennel --compile blinkled.fnl  | ./wrap_do.sh | tee /dev/ttyUSB0
 ```
 
+The `wrap_do` part is because of how local scope works with interactive mode, see https://www.lua.org/pil/4.2.html
+
 ## Getting Clojure in the mix
 
 Listening for output from Clojure
