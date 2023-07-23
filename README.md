@@ -17,7 +17,7 @@ $ cat /dev/ttyUSB0
 $ echo -e "do local x=4\nprint(x+2)\nend\n" > /dev/ttyUSB0
 ```
 
-Sometimes the `cat` command goes south. Then it seems to help to connect with screen:
+Sometimes the `cat` command goes south and loops forever. Then it seems to help to connect with screen:
 
 ```
 $ screen /dev/ttyUSB0 115200
