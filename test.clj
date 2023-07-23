@@ -19,13 +19,24 @@
 (comment
   (str->writelines 30 "hello world")) 
 
+(defn eval-lua [s]
+  (let [s' (format "do\n%s\nend\n" s)]
+    (doseq [l (str/split-lines s')]
+      (spit device (str l "\n")))))
+
+
 (defn spit-esp [f s]
-  ;; TODO - partition into ~800 lines
-  ;; and append each partition to file
-  (doseq [l (->> (concat
-                  [(format "file=io.open(\"%s\",\"w\")" f)
+  (eval-lua (format "
+    file=io.open(\"%s\",\"w\")
+    io.output(file)
+    io.close(file)" f))
+  (doseq [p (->> (str/split-lines s)
+                 (partition-all 500))
+          :let [_ (Thread/sleep 2000)]
+          l (->> (concat
+                  [(format "file=io.open(\"%s\",\"a\")" f)
                    "io.output(file)"]
-                  (->> (str/split-lines s)
+                  (->> p
                        (mapcat str->writelines))
                   ["io.close(file)"
                    "return 'done'"]))]
@@ -37,8 +48,8 @@
  (comment
    (let [s (->> (slurp "fennel.lua")
                 str/split-lines
-                (drop 800)
-                (take 800))]
+                #_(drop 800)
+                #_(take 600))]
 
      (spit-esp "fennel.lua" (str/join "\n" s))))
 
@@ -51,11 +62,6 @@
    (->> (slurp "test.lua")
         (str/split-lines)
         (map #(str/replace % "\\n" "v")))))
-
-(defn eval-lua [s]
-  (let [s' (format "do\n%s\nend\n" s)]
-    (doseq [l (str/split-lines s')]
-      (spit device (str l "\n")))))
 
 (comment 
   (eval-lua "
