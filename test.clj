@@ -8,20 +8,17 @@
      200 s))
   ([max-length s]
    (concat 
-    (->> s
-      (partition-all max-length)
-      (map (fn [cs]
-             ;; bracket levels -- see https://www.lua.org/manual/5.4/manual.html#3.1 
-             ;; search for 'long brackets'
-             (format "io.write([===[%s]===])" (apply str cs)))))
+    (loop [[p & ps] (partition-all max-length s)
+           res []]
+      (let [s (format "io.write([===[%s%s]===])" 
+                      (apply str p)
+                      (if (nil? ps) "\\\n" ""))]
+        (if (nil? ps)
+          (concat res [s])
+          (recur ps (concat res [s]))))))))
       
-    ["io.write([[\n]])"])))
-             
-        
-                             
-
 (comment
-  (str->writelines 3 "hello world")) 
+  (str->writelines 30 "hello world")) 
 
 (defn spit-esp [f s]
   (doseq [l (->> (concat
@@ -41,8 +38,8 @@
  (comment
    (let [s (->> (slurp "fennel.lua")
                 str/split-lines
-                (drop 1000)
-                (take 100))]
+                #_(drop 1800)
+                (take 500))]
      #_(->> (map count s)
             sort
             reverse
@@ -60,4 +57,16 @@
         (str/split-lines)
         (map #(str/replace % "\\n" "v")))))
 
-  
+(defn eval-lua [s]
+  (let [s' (format "do\n%s\nend\n" s)]
+    (doseq [l (str/split-lines s')]
+      (spit device (str l "\n")))))
+
+(comment 
+  (eval-lua "
+local ctr = 0
+for _ in io.lines'fennel.lua' do
+  ctr = ctr + 1
+end
+print(ctr) "))
+
