@@ -38,12 +38,7 @@
  (comment
    (let [s (->> (slurp "fennel.lua")
                 str/split-lines
-                #_(drop 1800)
-                (take 500))]
-     #_(->> (map count s)
-            sort
-            reverse
-            (take 10))
+                (take 800))]
 
      (spit-esp "fennel.lua" (str/join "\n" s))))
 
