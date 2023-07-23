@@ -41,8 +41,8 @@
  (comment
    (let [s (->> (slurp "fennel.lua")
                 str/split-lines
-                #_(drop 398)
-                #_(take 1))]
+                (drop 1000)
+                (take 100))]
      #_(->> (map count s)
             sort
             reverse
