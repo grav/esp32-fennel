@@ -20,8 +20,10 @@
   (str->writelines 30 "hello world")) 
 
 (defn spit-esp [f s]
+  ;; TODO - partition into ~800 lines
+  ;; and append each partition to file
   (doseq [l (->> (concat
-                  [(format "file=io.open(\"%s\",\"a\")" f)
+                  [(format "file=io.open(\"%s\",\"w\")" f)
                    "io.output(file)"]
                   (->> (str/split-lines s)
                        (mapcat str->writelines))
