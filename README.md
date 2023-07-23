@@ -17,6 +17,18 @@ $ cat /dev/ttyUSB0
 $ echo -e "do local x=4\nprint(x+2)\nend\n" > /dev/ttyUSB0
 ```
 
+Sometimes the `cat` command goes south. Then it seems to help to connect with screen:
+
+```
+$ screen /dev/ttyUSB0 115200
+```
+then send `<ctrl+a d>` to disconnect,
+
+and finally kill screen with 
+```
+$ killall screen
+```
+
 ## Send Fennel program to the device:
 
 ```
