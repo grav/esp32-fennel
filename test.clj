@@ -7,26 +7,23 @@
    (str->writelines
      200 s))
   ([max-length s]
-   (concat 
-    (loop [[p & ps] (partition-all max-length s)
-           res []]
-      (let [s (format "io.write([===[%s%s]===])" 
-                      (apply str p)
-                      (if (nil? ps) "\\\n" ""))]
-        (if (nil? ps)
-          (concat res [s])
-          (recur ps (concat res [s]))))))))
+   (loop [[p & ps] (partition-all max-length s)
+          res []]
+     (let [s (format "io.write([===[%s%s]===])" 
+                     (apply str p)
+                     (if (nil? ps) "\\\n" ""))]
+       (if (nil? ps)
+         (concat res [s])
+         (recur ps (concat res [s])))))))
       
 (comment
   (str->writelines 30 "hello world")) 
 
 (defn spit-esp [f s]
   (doseq [l (->> (concat
-                  [(format "file=io.open(\"%s\",\"w\")" f)
+                  [(format "file=io.open(\"%s\",\"a\")" f)
                    "io.output(file)"]
                   (->> (str/split-lines s)
-                       #_(map #(str/replace % "'" "\\'"))     
-                       #_(map #(str/replace % "\\n" "_"))
                        (mapcat str->writelines))
                   ["io.close(file)"
                    "return 'done'"]))]
@@ -38,6 +35,7 @@
  (comment
    (let [s (->> (slurp "fennel.lua")
                 str/split-lines
+                (drop 800)
                 (take 800))]
 
      (spit-esp "fennel.lua" (str/join "\n" s))))
