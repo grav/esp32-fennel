@@ -31,15 +31,21 @@
     io.output(file)
     io.close(file)" f))
   (doseq [p (->> (str/split-lines s)
-                 (partition-all 500))
-          :let [_ (Thread/sleep 2000)]
+                 (partition-all 200))
+          :let [_ (Thread/sleep 10000)]
           l (->> (concat
                   [(format "file=io.open(\"%s\",\"a\")" f)
                    "io.output(file)"]
                   (->> p
                        (mapcat str->writelines))
                   ["io.close(file)"
-                   "return 'done'"]))]
+                   "do"
+                   "local ctr = 0"
+                   "for _ in io.lines'fennel.lua' do"
+                   "  ctr = ctr + 1"
+                   " end"
+                   "print(ctr)"
+                   "end"]))]
     (spit device (str l "\n")))
         
  (comment
@@ -47,9 +53,7 @@
 
  (comment
    (let [s (->> (slurp "fennel.lua")
-                str/split-lines
-                #_(drop 800)
-                #_(take 600))]
+                str/split-lines)]
 
      (spit-esp "fennel.lua" (str/join "\n" s))))
 
