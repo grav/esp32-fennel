@@ -68,13 +68,16 @@
   (future (with-open [rdr (clojure.java.io/reader "/dev/ttyUSB0")] 
             (doall (map println (line-seq rdr))))))
 
-(defn copy-file [f]
-  (->> (slurp f)
-       (str/split-lines)
-       #_(drop 5670) 
-       #_(take 10)
-       (str/join "\n")
-       (spit-esp f)))
+(defn copy-file 
+  ([f]
+   (copy-file f f))
+  ([f t]
+   (->> (slurp f)
+        (str/split-lines)
+        #_(drop 5670) 
+        #_(take 10)
+        (str/join "\n")
+        (spit-esp t))))
 
 (comment
   (do
@@ -110,4 +113,4 @@ print(ctr) "))
   (eval-lua "return loadfile('test-fennel.lua')"))
 
 (comment
-  (eval-lua "return sys.gFreeHeap()"))
+  (eval-lua "print(node.heap())"))
