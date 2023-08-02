@@ -53,3 +53,44 @@ Sending some code with Clojure:
 user=> (spit "/dev/ttyUSB0" "do\nlocal x=5\nprint(x+3)\nend\n")
 ```
 
+## Pretty-printing tables
+We need to serialize data when sending it from the ESP32 to the client.
+Lua by default does not pretty-print tables, so they'll just be shown as
+
+```lua
+> {foo = 42, bar = {baz = {1, 2, "3"}}}
+table: 0x600002881980
+```
+
+That's no good. Fennel's repl works in another way:
+```
+>> {:bar {:baz [1 2 "3"]} :foo 42}
+{:bar {:baz [1 2 "3"]} :foo 42}
+```
+
+One thought was to use [antifennel](https://git.sr.ht/~technomancy/antifennel) to convert the resulting Lua expression back to fennel, and then pretty-print it,
+but that won't work because:
+1. we still need to pretty-print the result in Lua to send it to antifennel
+2. evaluating the code in Fennel won't pretty-print it, but just behave exactly like Lua, eg print something like "`table: 0x600002881980`".
+
+However, Fennel has a specific function for turning a map into a string:
+```
+>> (local fennel (require :fennel))
+>> (fennel.view {:foo 42})
+"{:foo 42}"
+```
+So, do we still need to run the whole Fennel compiler on the ESP32 to do this? Nope, we are so lucky that there's a separate (albeit older) version of the function both in [Fennel](https://git.sr.ht/~technomancy/fennel/tree/3dbee7d40bef802dcf58a07f2daea1db17e59dca/item/fennelview.fnl) but also in [Lua](https://git.sr.ht/~technomancy/fennel/tree/3dbee7d40bef802dcf58a07f2daea1db17e59dca/item/fennelview.lua)
+
+So 
+```
+$ curl -O https://git.sr.ht/~technomancy/fennel/tree/3dbee7d40bef802dcf58a07f2daea1db17e59dca/item/fennelview.lua
+$  lua -e "print((require 'fennelview')(load(\"return {foo = 42, bar = {baz = {1, 2, '3'}}}\")()))"
+{
+  :bar {
+    :baz [1 2 "3"]
+  }
+  :foo 42
+}
+```
+
+Now we just need to figure out how to evaluate the code in the correct context.
