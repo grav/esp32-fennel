@@ -108,3 +108,6 @@ print(ctr) "))
 
 (comment
   (eval-lua "return loadfile('test-fennel.lua')"))
+
+(comment
+  (eval-lua "return sys.gFreeHeap()"))
