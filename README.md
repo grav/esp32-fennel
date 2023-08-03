@@ -95,7 +95,7 @@ $  lua -e "print((require 'fennelview')(load(\"return {foo = 42, bar = {baz = {1
 
 Now we just need to figure out how to evaluate the code in the correct context.
 
-## Context
+## Maintaining the context (environment)
 In Fennel's repl, this works:
 ```
 >> (local foo 42)
@@ -118,3 +118,4 @@ Here's part of the way:
 > do local foo = {}; print(debug.getlocal(1,1)); end
 foo	table: 0x55cd2a702100
 ```
+See [The Debug Library](https://www.lua.org/manual/5.3/manual.html#6.10) for ref about `getlocal` and `setlocal`.
