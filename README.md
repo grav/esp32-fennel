@@ -94,3 +94,27 @@ $  lua -e "print((require 'fennelview')(load(\"return {foo = 42, bar = {baz = {1
 ```
 
 Now we just need to figure out how to evaluate the code in the correct context.
+
+## Context
+In Fennel's repl, this works:
+```
+>> (local foo 42)
+>> foo
+42
+```
+
+In Lua, the context is cleared after each "chunk":
+```
+> local foo = 42
+> foo
+nil
+```
+
+There may be hope - if we wrap the expressions in a `do-end` block, and then use `debug.getlocal` 
+we can retrieve all locals before the world ends, publish it to a global table, and then re-set the locals before evaluating the next expression.
+
+Here's part of the way:
+```
+> do local foo = {}; print(debug.getlocal(1,1)); end
+foo	table: 0x55cd2a702100
+```
