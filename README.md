@@ -119,3 +119,6 @@ Here's part of the way:
 foo	table: 0x55cd2a702100
 ```
 See [The Debug Library](https://www.lua.org/manual/5.3/manual.html#6.10) for ref about `getlocal` and `setlocal`.
+
+As an alternative to wrapping in `do-end`, we might be able to use [The Debug Interface](https://www.lua.org/manual/5.3/manual.html#4.9) to hook into locals being set. Not sure.
+
