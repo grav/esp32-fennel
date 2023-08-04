@@ -122,3 +122,5 @@ See [The Debug Library](https://www.lua.org/manual/5.3/manual.html#6.10) for ref
 
 As an alternative to wrapping in `do-end`, we might be able to use [The Debug Interface](https://www.lua.org/manual/5.3/manual.html#4.9) to hook into locals being set. Not sure.
 
+Ugh. No debug library, according to the [FAQ](https://nodemcu.readthedocs.io/en/release/lua-developer-faq/):
+> There is currently no debug library support. [snip] This omission was largely because of the Flash memory footprint of this library, but there is no reason in principle why we couldn't make this library available in the near future as a custom build option
